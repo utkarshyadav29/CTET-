@@ -1,0 +1,323 @@
+:root {
+    --bg-primary: #FFF8E7;
+    --text-main: #4A3A2A;
+    --potato-color: #D29953;
+    --btn-practice: #FF7E67;
+    --btn-practice-shadow: #E05D46;
+    --btn-study: #5CC8D7;
+    --btn-study-shadow: #3CA5B4;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    /* Removed overflow: hidden so other pages can scroll */
+}
+
+body.home {
+    overflow: hidden; /* Only Home screen should be strictly non-scrolling */
+}
+
+/* Moving Background Elements */
+.bg-shape {
+    position: fixed; /* Changed to fixed so they don't mess with scroll */
+    border-radius: 50%;
+    z-index: 0;
+    opacity: 0.4;
+    filter: blur(20px);
+    pointer-events: none;
+}
+
+.shape1 {
+    width: 300px;
+    height: 300px;
+    background: #FFDEE9;
+    top: -50px;
+    left: -50px;
+    animation: float-bg 8s ease-in-out infinite alternate;
+}
+
+.shape2 {
+    width: 250px;
+    height: 250px;
+    background: #B5FFFC;
+    bottom: -50px;
+    right: -20px;
+    animation: float-bg 10s ease-in-out infinite alternate-reverse;
+}
+
+.shape3 {
+    width: 200px;
+    height: 200px;
+    background: #FFF2B2;
+    top: 40%;
+    right: -100px;
+    animation: float-bg 12s ease-in-out infinite alternate;
+}
+
+@keyframes float-bg {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(50px, 50px) rotate(45deg); }
+}
+
+/* App Container */
+.app-container {
+    width: 100%;
+    max-width: 480px; 
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    z-index: 1;
+    position: relative;
+}
+
+/* Header & Typography */
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+}
+
+.title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #FF6B6B;
+    text-shadow: 3px 3px 0px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    line-height: 1;
+}
+
+.bounce {
+    display: inline-block;
+    animation: bouncyText 2s ease-in-out infinite;
+    transform-origin: bottom;
+}
+
+@keyframes bouncyText {
+    0%, 100% { transform: translateY(0) scaleY(1); }
+    20% { transform: translateY(-15px) scaleY(1.1); color: #FFD166; }
+    40% { transform: translateY(0) scaleY(0.95); }
+    60% { transform: translateY(-5px) scaleY(1.05); }
+    80% { transform: translateY(0) scaleY(1); }
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #4ECDC4;
+    margin-top: 0.5rem;
+    animation: popIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+}
+
+/* Mascot Container & Animations */
+.mascot-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 0;
+}
+
+.moti-potato {
+    width: 250px;
+    height: 250px;
+    filter: drop-shadow(0px 15px 15px rgba(0,0,0,0.15));
+    animation: float-potato 3s ease-in-out infinite;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.moti-potato:active {
+    transform: scale(0.9) rotate(-5deg);
+}
+
+@keyframes float-potato {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* Potato Body Breathing */
+.body {
+    transform-origin: center;
+    animation: breathe 4s ease-in-out infinite;
+}
+
+@keyframes breathe {
+    0%, 100% { transform: scaleX(1) scaleY(1); }
+    50% { transform: scaleX(1.03) scaleY(0.97); }
+}
+
+/* Eye Blinking */
+.eyelids {
+    opacity: 0;
+    animation: blink 4s infinite;
+}
+
+@keyframes blink {
+    0%, 96%, 98% { opacity: 0; }
+    97%, 100% { opacity: 1; }
+}
+
+/* Arms Wiggling */
+.arm-left {
+    transform-origin: 45px 110px;
+    animation: wave-left 2s ease-in-out infinite;
+}
+
+.arm-right {
+    transform-origin: 160px 120px;
+    animation: wave-right 2s ease-in-out infinite;
+}
+
+@keyframes wave-left {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(15deg); }
+}
+
+@keyframes wave-right {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(-25deg); }
+}
+
+.shadow {
+    animation: shadow-scale 3s ease-in-out infinite;
+    transform-origin: center;
+}
+
+@keyframes shadow-scale {
+    0%, 100% { transform: scale(1); opacity: 0.15; }
+    50% { transform: scale(0.8); opacity: 0.05; }
+}
+
+/* Buttons Container */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 0 1rem;
+    margin-bottom: 2rem;
+}
+
+.btn {
+    position: relative;
+    border: none;
+    border-radius: 50px;
+    padding: 1.2rem 2rem;
+    font-family: inherit;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: translateY(100px);
+    opacity: 0;
+    animation: slideUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.btn-practice {
+    background-color: var(--btn-practice);
+    box-shadow: 0 8px 0 var(--btn-practice-shadow), 0 15px 20px rgba(0,0,0,0.1);
+    animation-delay: 0.3s;
+}
+
+.btn-study {
+    background-color: var(--btn-study);
+    box-shadow: 0 8px 0 var(--btn-study-shadow), 0 15px 20px rgba(0,0,0,0.1);
+    animation-delay: 0.5s;
+}
+
+.btn:active {
+    transform: translateY(6px) !important;
+    box-shadow: 0 2px 0 transparent, 0 5px 10px rgba(0,0,0,0.1) !important;
+}
+
+/* Shine Effect on Buttons */
+.btn-shine {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-25deg);
+    animation: shine 3s infinite;
+}
+
+.btn-icon {
+    font-size: 2rem;
+    animation: float-icon 2s ease-in-out infinite;
+}
+
+@keyframes shine {
+    0% { left: -100%; }
+    20% { left: 200%; }
+    100% { left: 200%; }
+}
+
+@keyframes float-icon {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes slideUp {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Funny Message Tooltip */
+.funny-message {
+    text-align: center;
+    font-weight: 700;
+    color: #FF6B6B;
+    min-height: 24px;
+    margin-top: 10px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 1.1rem;
+}
+
+/* Responsive adjustments */
+@media (max-height: 700px) {
+    .moti-potato {
+        width: 200px;
+        height: 200px;
+    }
+    .title {
+        font-size: 2.8rem;
+    }
+    .btn {
+        padding: 1rem 1.5rem;
+        font-size: 1.3rem;
+    }
+}

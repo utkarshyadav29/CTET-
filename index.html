@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Moti Potato - CTET Prep</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="home">
+    <!-- Animated background elements -->
+    <div class="bg-shape shape1"></div>
+    <div class="bg-shape shape2"></div>
+    <div class="bg-shape shape3"></div>
+
+    <div class="app-container">
+        <header class="header">
+            <h1 class="title">
+                <span class="bounce" style="animation-delay: 0.1s">M</span>
+                <span class="bounce" style="animation-delay: 0.2s">o</span>
+                <span class="bounce" style="animation-delay: 0.3s">t</span>
+                <span class="bounce" style="animation-delay: 0.4s">i</span>
+                &nbsp;
+                <span class="bounce" style="animation-delay: 0.5s">P</span>
+                <span class="bounce" style="animation-delay: 0.6s">o</span>
+                <span class="bounce" style="animation-delay: 0.7s">t</span>
+                <span class="bounce" style="animation-delay: 0.8s">a</span>
+                <span class="bounce" style="animation-delay: 0.9s">t</span>
+                <span class="bounce" style="animation-delay: 1.0s">o</span>
+            </h1>
+            <p class="subtitle">Maa's CTET Helper 🌟</p>
+        </header>
+
+        <div class="mascot-container">
+            <!-- Cute SVG Potato -->
+            <svg class="moti-potato" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- Shadow -->
+                <ellipse cx="100" cy="180" rx="60" ry="10" fill="rgba(0,0,0,0.15)" class="shadow" />
+                
+                <!-- Potato Body -->
+                <path class="body" d="M40 100 C 30 50, 80 20, 130 30 C 180 40, 170 120, 150 160 C 130 190, 60 180, 50 150 C 35 120, 45 130, 40 100 Z" fill="#D29953" stroke="#A97334" stroke-width="6"/>
+                <path class="body-highlight" d="M60 80 C 55 50, 90 35, 120 40" fill="none" stroke="#E6B472" stroke-width="8" stroke-linecap="round"/>
+                
+                <!-- Dimples/Spots -->
+                <circle cx="65" cy="130" r="4" fill="#A97334" opacity="0.6"/>
+                <circle cx="140" cy="110" r="5" fill="#A97334" opacity="0.5"/>
+                <circle cx="125" cy="150" r="3" fill="#A97334" opacity="0.7"/>
+                <circle cx="70" cy="60" r="4" fill="#A97334" opacity="0.6"/>
+                
+                <!-- Eyes -->
+                <g class="eyes">
+                    <!-- Left Eye -->
+                    <circle cx="85" cy="95" r="12" fill="white" />
+                    <circle cx="88" cy="95" r="6" fill="#2D2D2D" />
+                    <circle cx="90" cy="93" r="2" fill="white" />
+                    <!-- Right Eye -->
+                    <circle cx="130" cy="100" r="12" fill="white" />
+                    <circle cx="133" cy="100" r="6" fill="#2D2D2D" />
+                    <circle cx="135" cy="98" r="2" fill="white" />
+                </g>
+                
+                <!-- Blinking Eyelids (Hidden by default, animated in CSS) -->
+                <g class="eyelids">
+                    <path d="M 70 95 Q 85 110 100 95" fill="#D29953" stroke="#A97334" stroke-width="2"/>
+                    <path d="M 115 100 Q 130 115 145 100" fill="#D29953" stroke="#A97334" stroke-width="2"/>
+                </g>
+
+                <!-- Blush -->
+                <ellipse cx="70" cy="110" rx="8" ry="5" fill="#FF8A8A" opacity="0.6"/>
+                <ellipse cx="145" cy="115" rx="8" ry="5" fill="#FF8A8A" opacity="0.6"/>
+
+                <!-- Cute little mouth -->
+                <path class="mouth" d="M 100 115 Q 110 125 120 115" fill="none" stroke="#2D2D2D" stroke-width="4" stroke-linecap="round"/>
+
+                <!-- Arms -->
+                <path class="arm-left" d="M 45 110 Q 20 130 35 150" fill="none" stroke="#D29953" stroke-width="8" stroke-linecap="round"/>
+                <path class="arm-right" d="M 160 120 Q 185 100 170 80" fill="none" stroke="#D29953" stroke-width="8" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-practice" onclick="handleAction('practice')">
+                <span class="btn-icon">📝</span>
+                <span class="btn-text">Practice Test</span>
+                <div class="btn-shine"></div>
+            </button>
+            
+            <button class="btn btn-study" onclick="handleAction('study')">
+                <span class="btn-icon">📖</span>
+                <span class="btn-text">Padhai Karna Hai</span>
+                <div class="btn-shine"></div>
+            </button>
+        </div>
+        
+        <div id="funny-message" class="funny-message"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

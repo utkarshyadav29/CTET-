@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quiz - Moti Potato</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .quiz-container {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin: 10px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
+            width: 100%;
+        }
+
+        .question-slide {
+            display: none;
+        }
+
+        .question-slide.active {
+            display: block;
+            animation: fadeInRight 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #A97334;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #4A3A2A;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            background: #FFF8E7;
+            border: 3px solid #FFE4B5;
+            padding: 15px 20px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #4A3A2A;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .option-label input[type="radio"] {
+            display: none;
+        }
+
+        .option-label:hover {
+            background: #FFF2B2;
+        }
+
+        .option-label.selected {
+            background: #FFF2B2;
+            border-color: #D29953;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transform: scale(1.02);
+        }
+
+        .option-label.correct {
+            background: #E8F8F5;
+            border-color: #4ECDC4 !important;
+            color: #2C3E50;
+        }
+
+        .option-label.correct::after {
+            content: '✅';
+            position: absolute;
+            right: 15px;
+            font-size: 1.5rem;
+        }
+
+        .option-label.wrong {
+            background: #FDEDEC;
+            border-color: #FF6B6B !important;
+            color: #78281F;
+        }
+
+        .option-label.wrong::after {
+            content: '❌';
+            position: absolute;
+            right: 15px;
+            font-size: 1.5rem;
+        }
+
+        .action-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .small-btn {
+            background: #4ECDC4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #3BA59C;
+            transition: all 0.1s;
+        }
+
+        .small-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .cheat-btn {
+            background: #FFD166;
+            color: #4A3A2A;
+            box-shadow: 0 4px 0 #E5B955;
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+        }
+
+        .submit-ans-btn {
+            background: #FF7E67;
+            color: white;
+            box-shadow: 0 4px 0 #E05D46;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            display: none; 
+        }
+
+        .next-btn {
+            background: #5CC8D7;
+            box-shadow: 0 4px 0 #3CA5B4;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            display: none; 
+            color: white;
+        }
+
+        .explanation-box {
+            margin-top: 25px;
+            padding: 20px;
+            background: #E8F8F5;
+            border-left: 6px solid #4ECDC4;
+            border-radius: 10px;
+            display: none; 
+        }
+
+        .explanation-text {
+            font-size: 1.1rem;
+            color: #2C3E50;
+            margin-bottom: 15px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .funny-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            z-index: 1000;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #FF6B6B;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .funny-popup.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.show { display: block; }
+
+        .score-board {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .score-title {
+            font-size: 2.5rem;
+            color: #FF7E67;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+
+        .score-number {
+            font-size: 4rem;
+            color: #4ECDC4;
+            font-weight: 900;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            background: white;
+            border: 2px solid #ddd;
+            width: 45px; height: 45px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-shape shape1"></div>
+    <div class="bg-shape shape2"></div>
+    
+    <!-- Changed overlay to not close popup if it's the strict timeout type -->
+    <div class="overlay" id="overlay"></div>
+    <div class="funny-popup" id="popup"></div>
+
+    <div class="app-container" style="justify-content: flex-start; padding-top: 1rem;">
+        <div class="top-bar">
+            <!-- Go back to subjects page -->
+            <button class="back-btn" onclick="window.location.href='subjects.html?mode=quiz'">🔙</button>
+        </div>
+
+        <div class="quiz-container" id="quiz-container">
+            <!-- Questions injected here via JS -->
+        </div>
+
+        <div class="score-board" id="score-board">
+            <div class="score-title" id="score-msg"></div>
+            <div class="score-number" id="score-number"></div>
+            <button class="btn btn-practice" style="width: 100%; margin-top: 30px; position: static; transform: none; opacity: 1; animation: none;" onclick="window.location.href='index.html'">Go Home 🏠</button>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        let score = 0;
+        let currentQuestion = 0;
+        let selectedOption = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestion(currentQuestion);
+        });
+
+        function renderQuestion(index) {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = ''; // clear previous
+            selectedOption = null;
+
+            if (index >= quizData.length) {
+                showScoreBoard();
+                return;
+            }
+
+            const q = quizData[index];
+            const card = document.createElement('div');
+            card.className = 'question-slide active';
+            
+            let optionsHtml = '';
+            q.options.forEach((opt, optIndex) => {
+                optionsHtml += `
+                    <label class="option-label" id="label-${optIndex}">
+                        <input type="radio" name="q_opt" value="${optIndex}" onchange="selectOption(${optIndex})">
+                        ${opt}
+                    </label>
+                `;
+            });
+
+            card.innerHTML = `
+                <div class="question-header">
+                    <span>प्रश्न ${index + 1} / ${quizData.length}</span>
+                </div>
+                <div class="question-text" id="q-text">${q.q_mr}</div>
+                
+                <div class="options-list">
+                    ${optionsHtml}
+                </div>
+                
+                <div class="action-row">
+                    <button class="small-btn cheat-btn" onclick="cheatAndTranslate(${index})">Chalo cheating karti hu 👀</button>
+                </div>
+
+                <button class="small-btn submit-ans-btn" id="submit-btn" onclick="submitAnswer(${index})">Submit Answer</button>
+                
+                <div class="explanation-box" id="exp-box">
+                    <div class="explanation-text" id="exp-text">${q.exp_mr}</div>
+                    <button class="small-btn" onclick="toggleExpLang(${index}, this)">हिंदी में समझें 🔄</button>
+                </div>
+
+                <button class="small-btn next-btn" id="next-btn" onclick="nextQuestion()">Next Question ➡️</button>
+            `;
+            container.appendChild(card);
+        }
+
+        function selectOption(optIndex) {
+            document.querySelectorAll('.option-label').forEach(el => el.classList.remove('selected'));
+            document.getElementById(`label-${optIndex}`).classList.add('selected');
+            selectedOption = optIndex;
+            document.getElementById('submit-btn').style.display = 'block';
+        }
+
+        // Cheat button translates question ONLY AFTER popup disappears
+        function cheatAndTranslate(index) {
+            // Show popup for exactly 4 seconds
+            showPopup("Teacher ho, sharam nahi aati 🤦‍♀️😂", 4000);
+            
+            // Wait 4 seconds, then translate
+            setTimeout(() => {
+                document.getElementById('q-text').innerText = quizData[index].q_hi;
+            }, 4000);
+        }
+
+        // Submit answer logic
+        function submitAnswer(qIndex) {
+            if (selectedOption === null) return;
+
+            document.getElementById('submit-btn').style.display = 'none';
+            document.querySelector('.cheat-btn').style.display = 'none';
+            document.querySelectorAll('input[type="radio"]').forEach(el => el.disabled = true);
+
+            const isCorrect = (selectedOption === quizData[qIndex].correct);
+            const selectedLabel = document.getElementById(`label-${selectedOption}`);
+            const correctLabel = document.getElementById(`label-${quizData[qIndex].correct}`);
+            
+            correctLabel.classList.add('correct');
+
+            if (isCorrect) {
+                score++;
+            } else {
+                selectedLabel.classList.add('wrong');
+                // Show funny poop popup if wrong
+                showPopup("Chee chee hag diya 💩", 3000);
+            }
+
+            // Always show info/explanation box after submit
+            document.getElementById('exp-box').style.display = 'block';
+
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            renderQuestion(currentQuestion);
+        }
+
+        let expIsHindi = false;
+        function toggleExpLang(index, btnElement) {
+            if (!expIsHindi) {
+                document.getElementById(`exp-text`).innerText = quizData[index].exp_hi;
+                btnElement.innerText = 'मराठीत समजून घ्या 🔄';
+                expIsHindi = true;
+            } else {
+                document.getElementById(`exp-text`).innerText = quizData[index].exp_mr;
+                btnElement.innerText = 'हिंदी में समझें 🔄';
+                expIsHindi = false;
+            }
+        }
+
+        let popupTimeout;
+        function showPopup(message, duration = 3000) {
+            const popup = document.getElementById('popup');
+            const overlay = document.getElementById('overlay');
+            popup.innerText = message;
+            popup.classList.add('show');
+            overlay.classList.add('show');
+            
+            clearTimeout(popupTimeout);
+            popupTimeout = setTimeout(closePopup, duration);
+        }
+
+        function closePopup() {
+            document.getElementById('popup').classList.remove('show');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        // If overlay clicked, we don't close it automatically if it's the cheating one
+        // so the user MUST wait the 4 seconds! 
+        document.getElementById('overlay').addEventListener('click', () => {
+            // Uncomment the line below if you want clicking outside to close it early.
+            // closePopup(); 
+        });
+
+        function showScoreBoard() {
+            document.getElementById('quiz-container').style.display = 'none';
+            const board = document.getElementById('score-board');
+            board.style.display = 'block';
+            
+            const msgEl = document.getElementById('score-msg');
+            const numEl = document.getElementById('score-number');
+            
+            numEl.innerText = `${score} / ${quizData.length}`;
+
+            if (score === quizData.length) {
+                msgEl.innerHTML = `🌟 Outstanding, Maa! 🌟`;
+            } else if (score >= quizData.length / 2) {
+                msgEl.innerHTML = `👍 Good Job! Keep Studying!`;
+            } else {
+                msgEl.innerHTML = `📚 Padhai Karna Hai wapas!`;
+            }
+        }
+    </script>
+</body>
+</html>
