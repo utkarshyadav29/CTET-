@@ -125,20 +125,12 @@
         
         <h1 class="page-title" id="page-title">Select Subject</h1>
         
-        <div class="accordion-container">
-            <div class="subject-header" onclick="toggleAccordion(this)">
-                <span>📚 इतिहास (History)</span>
-                <span class="dropdown-icon">▼</span>
-            </div>
-            <div class="chapters-list">
-                <button class="chapter-btn" onclick="goToChapter('history_1')">
-                    1. 1935-1942 Freedom Struggle (स्वातंत्र्य लढ्याचे अंतिम पर्व)
-                </button>
-                <!-- Add more chapters here as needed -->
-            </div>
+        <div class="accordion-container" id="subjects-container">
+            <!-- Dynamically populated -->
         </div>
     </div>
 
+    <script src="data.js"></script>
     <script>
         // Check mode from URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -146,15 +138,44 @@
 
         document.getElementById('page-title').innerText = mode === 'quiz' ? 'Select Quiz 📝' : 'Padhai Karna Hai 📖';
 
+        function renderSubjects() {
+            const container = document.getElementById('subjects-container');
+            container.innerHTML = '';
+            
+            subjectsData.forEach(subject => {
+                let chaptersHtml = '';
+                subject.chapters.forEach(chapter => {
+                    chaptersHtml += `
+                        <button class="chapter-btn" onclick="goToChapter('${subject.id}', '${chapter.id}')">
+                            ${chapter.title_mr}
+                        </button>
+                    `;
+                });
+                
+                const subjectHtml = `
+                    <div class="subject-header" onclick="toggleAccordion(this)">
+                        <span>${subject.title_mr}</span>
+                        <span class="dropdown-icon">▼</span>
+                    </div>
+                    <div class="chapters-list">
+                        ${chaptersHtml}
+                    </div>
+                `;
+                container.innerHTML += subjectHtml;
+            });
+        }
+
+        renderSubjects();
+
         function toggleAccordion(element) {
             element.classList.toggle('active');
         }
 
-        function goToChapter(chapterId) {
+        function goToChapter(subjectId, chapterId) {
             if (mode === 'quiz') {
-                window.location.href = `quiz.html?chapter=${chapterId}`;
+                window.location.href = `quiz.html?subject=${subjectId}&chapter=${chapterId}`;
             } else {
-                window.location.href = `study.html?chapter=${chapterId}`;
+                window.location.href = `study.html?subject=${subjectId}&chapter=${chapterId}`;
             }
         }
     </script>
