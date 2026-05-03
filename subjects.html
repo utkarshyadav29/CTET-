@@ -130,8 +130,16 @@
         </div>
     </div>
 
-    <script src="data.js"></script>
     <script>
+        // Force refresh data.js by adding a timestamp
+        const script = document.createElement('script');
+        script.src = 'data.js?v=' + new Date().getTime();
+        document.head.appendChild(script);
+
+        script.onload = () => {
+            renderSubjects();
+        };
+
         // Check mode from URL
         const urlParams = new URLSearchParams(window.location.search);
         const mode = urlParams.get('mode') || 'study';
@@ -145,8 +153,11 @@
             subjectsData.forEach(subject => {
                 let chaptersHtml = '';
                 subject.chapters.forEach(chapter => {
+                    const isMega = (chapter.id === 'mega_quiz' || chapter.type === 'mega');
+                    const style = isMega ? 'background: #FF7E67; color: white; border-radius: 10px; margin: 10px; width: calc(100% - 20px); text-align: center; border: none;' : '';
+                    
                     chaptersHtml += `
-                        <button class="chapter-btn" onclick="goToChapter('${subject.id}', '${chapter.id}')">
+                        <button class="chapter-btn" style="${style}" onclick="goToChapter('${subject.id}', '${chapter.id}', ${isMega})">
                             ${chapter.title_mr}
                         </button>
                     `;
@@ -165,14 +176,13 @@
             });
         }
 
-        renderSubjects();
-
         function toggleAccordion(element) {
             element.classList.toggle('active');
         }
 
-        function goToChapter(subjectId, chapterId) {
-            if (mode === 'quiz') {
+        function goToChapter(subjectId, chapterId, isMega) {
+            // Mega Quiz always goes to quiz.html regardless of mode
+            if (mode === 'quiz' || isMega) {
                 window.location.href = `quiz.html?subject=${subjectId}&chapter=${chapterId}`;
             } else {
                 window.location.href = `study.html?subject=${subjectId}&chapter=${chapterId}`;

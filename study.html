@@ -135,27 +135,36 @@
         </div>
     </div>
 
-    <script src="data.js"></script>
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const subjectId = urlParams.get('subject') || 'history';
-        const chapterId = urlParams.get('chapter') || 'history_1';
+        // Force refresh data.js by adding a timestamp
+        const dataScript = document.createElement('script');
+        dataScript.src = 'data.js?v=' + new Date().getTime();
+        document.head.appendChild(dataScript);
 
-        let theoryData = [];
-        let chapterTitle = '';
+        dataScript.onload = () => {
+            initializeStudy();
+        };
+    </script>
+    <script>
+        function initializeStudy() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const subjectId = urlParams.get('subject') || 'history';
+            const chapterId = urlParams.get('chapter') || 'history_1';
 
-        // Find the correct subject and chapter
-        const subject = subjectsData.find(s => s.id === subjectId);
-        if (subject) {
-            document.querySelector('.subject-label').innerText = subject.title_mr;
-            const chapter = subject.chapters.find(c => c.id === chapterId);
-            if (chapter) {
-                theoryData = chapter.theory || [];
-                chapterTitle = chapter.title_mr;
+            let theoryData = [];
+            let chapterTitle = '';
+
+            // Find the correct subject and chapter
+            const subject = subjectsData.find(s => s.id === subjectId);
+            if (subject) {
+                document.querySelector('.subject-label').innerText = subject.title_mr;
+                const chapter = subject.chapters.find(c => c.id === chapterId);
+                if (chapter) {
+                    theoryData = chapter.theory || [];
+                    chapterTitle = chapter.title_mr;
+                }
             }
-        }
 
-        document.addEventListener('DOMContentLoaded', () => {
             if (chapterTitle) {
                 document.querySelector('.chapter-title').innerText = chapterTitle;
             }
@@ -191,31 +200,28 @@
             // Update quiz button url
             const testBtn = document.querySelector('.take-test-btn');
             testBtn.onclick = () => window.location.href = `quiz.html?subject=${subjectId}&chapter=${chapterId}`;
-        });
 
-        let langState = [];
-        // initialized properly later
-        
-        // Use a function instead of top level array so theoryData is loaded
-        function getLangState(index) {
-            if (langState.length !== theoryData.length) {
-                langState = new Array(theoryData.length).fill('mr');
+            let langState = [];
+            function getLangState(idx) {
+                if (langState.length !== theoryData.length) {
+                    langState = new Array(theoryData.length).fill('mr');
+                }
+                return langState[idx];
             }
-            return langState[index];
-        }
 
-        function toggleLanguage(index, btnElement) {
-            if (getLangState(index) === 'mr') {
-                document.getElementById(`title-${index}`).innerText = theoryData[index].title_hi;
-                document.getElementById(`content-${index}`).innerText = theoryData[index].content_hi;
-                btnElement.innerText = "मराठीत बदला (Bhasha Badle) 🔄";
-                langState[index] = 'hi';
-            } else {
-                document.getElementById(`title-${index}`).innerText = theoryData[index].title_mr;
-                document.getElementById(`content-${index}`).innerText = theoryData[index].content_mr;
-                btnElement.innerText = "हिंदी में बदलें (Bhasha Badle) 🔄";
-                langState[index] = 'mr';
-            }
+            window.toggleLanguage = (idx, btnElement) => {
+                if (getLangState(idx) === 'mr') {
+                    document.getElementById(`title-${idx}`).innerText = theoryData[idx].title_hi;
+                    document.getElementById(`content-${idx}`).innerText = theoryData[idx].content_hi;
+                    btnElement.innerText = "मराठीत बदला (Bhasha Badle) 🔄";
+                    langState[idx] = 'hi';
+                } else {
+                    document.getElementById(`title-${idx}`).innerText = theoryData[idx].title_mr;
+                    document.getElementById(`content-${idx}`).innerText = theoryData[idx].content_mr;
+                    btnElement.innerText = "हिंदी में बदलें (Bhasha Badle) 🔄";
+                    langState[idx] = 'mr';
+                }
+            };
         }
     </script>
 </body>

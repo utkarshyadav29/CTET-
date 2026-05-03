@@ -323,9 +323,19 @@
         </div>
     </div>
 
-    <script src="data.js"></script>
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
+        // Force refresh data.js by adding a timestamp
+        const dataScript = document.createElement('script');
+        dataScript.src = 'data.js?v=' + new Date().getTime();
+        document.head.appendChild(dataScript);
+
+        dataScript.onload = () => {
+            initializeQuiz();
+        };
+    </script>
+    <script>
+        function initializeQuiz() {
+            const urlParams = new URLSearchParams(window.location.search);
         const subjectId = urlParams.get('subject') || 'history';
         const chapterId = urlParams.get('chapter') || 'history_1';
 
@@ -576,6 +586,13 @@
             else if (percentage >= 60) msgEl.innerHTML = `👍 Good Job! Keep Studying!${detailsHtml}`;
             else msgEl.innerHTML = `📚 Padhai Karna Hai wapas!${detailsHtml}`;
         }
+    </script>
+    <script>
+        // Wrap everything in initializeQuiz
+        const oldOnLoad = window.onload;
+        window.onload = () => {
+            if(oldOnLoad) oldOnLoad();
+        };
     </script>
 </body>
 </html>
