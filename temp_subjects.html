@@ -182,11 +182,10 @@
 
         function goToChapter(subjectId, chapterId, isMega) {
             // Mega Quiz always goes to quiz.html regardless of mode
-            const t = new Date().getTime();
             if (mode === 'quiz' || isMega) {
-                window.location.href = `quiz.html?subject=${subjectId}&chapter=${chapterId}&v=${t}`;
+                window.location.href = `quiz.html?subject=${subjectId}&chapter=${chapterId}`;
             } else {
-                window.location.href = `study.html?subject=${subjectId}&chapter=${chapterId}&v=${t}`;
+                window.location.href = `study.html?subject=${subjectId}&chapter=${chapterId}`;
             }
         }
     </script>

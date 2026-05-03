@@ -37,13 +37,13 @@ function handleAction(action) {
         const btn = document.querySelector('.btn-practice');
         btn.innerHTML = 'Wait karo... 🥔💨';
         setTimeout(() => {
-            window.location.href = 'subjects.html?mode=quiz';
+            window.location.href = 'subjects.html?mode=quiz&v=' + new Date().getTime();
         }, 800);
     } else if (action === 'study') {
         const btn = document.querySelector('.btn-study');
         btn.innerHTML = 'Chalo Padhein! 📚';
         setTimeout(() => {
-            window.location.href = 'subjects.html?mode=study';
+            window.location.href = 'subjects.html?mode=study&v=' + new Date().getTime();
         }, 800);
     }
 }
