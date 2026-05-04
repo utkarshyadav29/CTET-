@@ -325,7 +325,7 @@
 
     <script>
         let subjectsData = [];
-        fetch('quiz.json?v=' + new Date().getTime())
+        fetch('/quiz.json')
             .then(res => res.json())
             .then(data => {
                 subjectsData = data;
@@ -334,11 +334,6 @@
             .catch(err => console.error("Error loading quiz data:", err));
     </script>
     <script>
-        function initializeQuiz() {
-            const urlParams = new URLSearchParams(window.location.search);
-        const subjectId = urlParams.get('subject') || 'history';
-        const chapterId = urlParams.get('chapter') || 'history_1';
-
         let quizData = [];
         let isMegaQuiz = false;
         let isHindiMode = false;
@@ -348,32 +343,30 @@
         let selectedOption = null;
         let timeLeft = 5400; 
         let timerInterval = null;
+        let storageKey = '';
 
-        const storageKey = `moti_potato_progress_${subjectId}_${chapterId}`;
+        function initializeQuiz() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const subjectId = urlParams.get('subject') || 'history';
+            const chapterId = urlParams.get('chapter') || 'history_1';
 
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
+            storageKey = `moti_potato_progress_${subjectId}_${chapterId}`;
 
-        const subject = subjectsData.find(s => s.id === subjectId);
-        if (subject) {
-            const chapter = subject.chapters.find(c => c.id === chapterId);
-            if (chapter && chapter.quiz) {
-                quizData = [...chapter.quiz];
-                isMegaQuiz = (chapter.id === 'mega_quiz' || chapter.type === 'mega');
-                document.getElementById('quiz-heading').innerText = chapter.title_mr || chapter.name;
-                
-                if (isMegaQuiz) {
-                    shuffleArray(quizData);
-                    document.getElementById('timer-display').style.display = 'block';
+            const subject = subjectsData.find(s => s.id === subjectId);
+            if (subject) {
+                const chapter = subject.chapters.find(c => c.id === chapterId);
+                if (chapter && chapter.quiz) {
+                    quizData = [...chapter.quiz];
+                    isMegaQuiz = (chapter.id === 'mega_quiz' || chapter.type === 'mega');
+                    document.getElementById('quiz-heading').innerText = chapter.title_mr || chapter.name;
+                    
+                    if (isMegaQuiz) {
+                        shuffleArray(quizData);
+                        document.getElementById('timer-display').style.display = 'block';
+                    }
                 }
             }
-        }
 
-        document.addEventListener('DOMContentLoaded', () => {
             if (quizData.length === 0) {
                 document.getElementById('quiz-container').innerHTML = '<div style="text-align:center; padding: 20px;">No questions found!</div>';
                 return;
@@ -388,7 +381,14 @@
                 }
             }
             startQuiz();
-        });
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
 
         function startQuiz() {
             if (isMegaQuiz) startTimer();
@@ -596,3 +596,4 @@
     </script>
 </body>
 </html>
+        

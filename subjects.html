@@ -132,7 +132,7 @@
 
     <script>
         let subjectsData = [];
-        fetch('quiz.json?v=' + new Date().getTime())
+        fetch('/quiz.json')
             .then(res => res.json())
             .then(data => {
                 subjectsData = data;
