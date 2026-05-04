@@ -130,13 +130,21 @@
         </div>
     </div>
 
-    <script src="./data.js?v=2" defer></script>
+    <script src="./data.js?v=2"></script>
     <script>
         // Check mode from URL
         const urlParams = new URLSearchParams(window.location.search);
         const mode = urlParams.get('mode') || 'study';
 
-        document.getElementById('page-title').innerText = mode === 'quiz' ? 'Select Quiz 📝' : 'Padhai Karna Hai 📖';
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('page-title').innerText = mode === 'quiz' ? 'Select Quiz 📝' : 'Padhai Karna Hai 📖';
+
+            if (typeof subjectsData === 'undefined') {
+                document.getElementById('subjects-container').innerHTML = '<div style="text-align:center; padding:20px;">Data failed to load. Please refresh.</div>';
+                return;
+            }
+            renderSubjects();
+        });
 
         function renderSubjects() {
             const container = document.getElementById('subjects-container');
@@ -164,8 +172,6 @@
                 container.innerHTML += subjectHtml;
             });
         }
-
-        renderSubjects();
 
         function toggleAccordion(element) {
             element.classList.toggle('active');

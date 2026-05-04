@@ -135,7 +135,7 @@
         </div>
     </div>
 
-    <script src="./data.js?v=2" defer></script>
+    <script src="./data.js?v=2"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const subjectId = urlParams.get('subject') || 'history';
@@ -143,19 +143,25 @@
 
         let theoryData = [];
         let chapterTitle = '';
-
-        // Find the correct subject and chapter
-        const subject = subjectsData.find(s => s.id === subjectId);
-        if (subject) {
-            document.querySelector('.subject-label').innerText = subject.title_mr;
-            const chapter = subject.chapters.find(c => c.id === chapterId);
-            if (chapter) {
-                theoryData = chapter.theory || [];
-                chapterTitle = chapter.title_mr;
-            }
-        }
+        let subject = null;
 
         document.addEventListener('DOMContentLoaded', () => {
+            if (typeof subjectsData === 'undefined') {
+                document.getElementById('slides-container').innerHTML = '<div style="text-align:center; padding:20px;">Data failed to load. Please refresh.</div>';
+                return;
+            }
+
+            // Find the correct subject and chapter
+            subject = subjectsData.find(s => s.id === subjectId);
+            if (subject) {
+                document.querySelector('.subject-label').innerText = subject.title_mr;
+                const chapter = subject.chapters.find(c => c.id === chapterId);
+                if (chapter) {
+                    theoryData = chapter.theory || [];
+                    chapterTitle = chapter.title_mr;
+                }
+            }
+
             if (chapterTitle) {
                 document.querySelector('.chapter-title').innerText = chapterTitle;
             }
@@ -167,13 +173,15 @@
             }
 
             // Add Chapter Image
-            const chapterObj = subject.chapters.find(c => c.id === chapterId);
-            if (chapterObj && chapterObj.image) {
-                const imgDiv = document.createElement('div');
-                imgDiv.style.textAlign = 'center';
-                imgDiv.style.marginBottom = '20px';
-                imgDiv.innerHTML = `<img src="${chapterObj.image}" style="width: 100%; max-width: 500px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">`;
-                container.appendChild(imgDiv);
+            if (subject) {
+                const chapterObj = subject.chapters.find(c => c.id === chapterId);
+                if (chapterObj && chapterObj.image) {
+                    const imgDiv = document.createElement('div');
+                    imgDiv.style.textAlign = 'center';
+                    imgDiv.style.marginBottom = '20px';
+                    imgDiv.innerHTML = `<img src="${chapterObj.image}" style="width: 100%; max-width: 500px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">`;
+                    container.appendChild(imgDiv);
+                }
             }
 
             theoryData.forEach((item, index) => {
@@ -194,9 +202,7 @@
         });
 
         let langState = [];
-        // initialized properly later
         
-        // Use a function instead of top level array so theoryData is loaded
         function getLangState(index) {
             if (langState.length !== theoryData.length) {
                 langState = new Array(theoryData.length).fill('mr');
