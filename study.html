@@ -136,14 +136,14 @@
     </div>
 
     <script>
-        // Force refresh data.js by adding a timestamp
-        const dataScript = document.createElement('script');
-        dataScript.src = 'data.js?v=' + new Date().getTime();
-        document.head.appendChild(dataScript);
-
-        dataScript.onload = () => {
-            initializeStudy();
-        };
+        let subjectsData = [];
+        fetch('quiz.json?v=' + new Date().getTime())
+            .then(res => res.json())
+            .then(data => {
+                subjectsData = data;
+                initializeStudy();
+            })
+            .catch(err => console.error("Error loading quiz data:", err));
     </script>
     <script>
         function initializeStudy() {
