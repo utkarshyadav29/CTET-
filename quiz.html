@@ -348,21 +348,33 @@
         function initializeQuiz() {
             const urlParams = new URLSearchParams(window.location.search);
             const subjectId = urlParams.get('subject') || 'history';
-            const chapterId = urlParams.get('chapter') || 'history_1';
+            const chapterId = urlParams.get('chapter') || 'mega_quiz';
 
             storageKey = `moti_potato_progress_${subjectId}_${chapterId}`;
 
             const subject = subjectsData.find(s => s.id === subjectId);
             if (subject) {
-                const chapter = subject.chapters.find(c => c.id === chapterId);
-                if (chapter && chapter.quiz) {
-                    quizData = [...chapter.quiz];
-                    isMegaQuiz = (chapter.id === 'mega_quiz' || chapter.type === 'mega');
-                    document.getElementById('quiz-heading').innerText = chapter.title_mr || chapter.name;
-                    
-                    if (isMegaQuiz) {
-                        shuffleArray(quizData);
-                        document.getElementById('timer-display').style.display = 'block';
+                if (chapterId === 'mega_quiz') {
+                    // Dynamically generate mega quiz by combining all questions
+                    quizData = [];
+                    subject.chapters.forEach(c => {
+                        if (c.quiz) quizData.push(...c.quiz);
+                    });
+                    isMegaQuiz = true;
+                    document.getElementById('quiz-heading').innerText = '🏆 मेगा क्विझ (सर्व प्रश्न)';
+                    shuffleArray(quizData);
+                    document.getElementById('timer-display').style.display = 'block';
+                } else {
+                    const chapter = subject.chapters.find(c => c.id === chapterId);
+                    if (chapter && chapter.quiz) {
+                        quizData = [...chapter.quiz];
+                        isMegaQuiz = (chapter.id === 'mega_quiz' || chapter.type === 'mega');
+                        document.getElementById('quiz-heading').innerText = chapter.title_mr || chapter.name;
+                        
+                        if (isMegaQuiz) {
+                            shuffleArray(quizData);
+                            document.getElementById('timer-display').style.display = 'block';
+                        }
                     }
                 }
             }

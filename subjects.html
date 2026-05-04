@@ -163,6 +163,13 @@
                     `;
                 });
                 
+                // Always add a Mega Quiz button at the bottom
+                chaptersHtml += `
+                    <button class="chapter-btn" style="background: #FF7E67; color: white; border-radius: 10px; margin: 10px; width: calc(100% - 20px); text-align: center; border: none; padding: 15px 20px; font-size: 1.1rem; font-weight: 700; cursor: pointer;" onclick="goToChapter('${subject.id}', 'mega_quiz', true)">
+                        🏆 मेगा क्विझ (सर्व ८५ प्रश्न)
+                    </button>
+                `;
+                
                 const subjectHtml = `
                     <div class="subject-header" onclick="toggleAccordion(this)">
                         <span>${subject.title_mr}</span>
