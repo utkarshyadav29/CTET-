@@ -323,11 +323,9 @@
         </div>
     </div>
 
-    <script src="data.js"></script>
+    <script src="./data.js?v=2" defer></script>
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const subjectId = urlParams.get('subject') || 'history';
-        const chapterId = urlParams.get('chapter') || 'history_1';
+        console.log("Data loaded:", typeof subjectsData);
 
         let quizData = [];
         let isMegaQuiz = false;
@@ -336,10 +334,9 @@
         let score = 0;
         let currentQuestion = 0;
         let selectedOption = null;
-        let timeLeft = 5400; 
+        let timeLeft = 5400;
         let timerInterval = null;
-
-        const storageKey = `moti_potato_progress_${subjectId}_${chapterId}`;
+        let storageKey = '';
 
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -348,24 +345,35 @@
             }
         }
 
-        const subject = subjectsData.find(s => s.id === subjectId);
-        if (subject) {
-            const chapter = subject.chapters.find(c => c.id === chapterId);
-            if (chapter && chapter.quiz) {
-                quizData = [...chapter.quiz];
-                isMegaQuiz = (chapter.id === 'mega_quiz' || chapter.type === 'mega');
-                document.getElementById('quiz-heading').innerText = chapter.title_mr || chapter.name;
-                
-                if (isMegaQuiz) {
-                    shuffleArray(quizData);
-                    document.getElementById('timer-display').style.display = 'block';
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof subjectsData === 'undefined') {
+                document.getElementById('quiz-container').innerHTML = '<h2 style="text-align:center; padding:20px;">Quiz data failed to load</h2>';
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const subjectId = urlParams.get('subject') || 'history';
+            const chapterId = urlParams.get('chapter') || 'ch1';
+
+            storageKey = `moti_potato_progress_${subjectId}_${chapterId}`;
+
+            const subject = subjectsData.find(s => s.id === subjectId);
+            if (subject) {
+                const chapter = subject.chapters.find(c => c.id === chapterId);
+                if (chapter && chapter.quiz) {
+                    quizData = [...chapter.quiz];
+                    isMegaQuiz = (chapter.id === 'mega_quiz' || chapter.type === 'mega');
+                    document.getElementById('quiz-heading').innerText = chapter.title_mr || chapter.name;
+
+                    if (isMegaQuiz) {
+                        shuffleArray(quizData);
+                        document.getElementById('timer-display').style.display = 'block';
+                    }
                 }
             }
-        }
 
-        document.addEventListener('DOMContentLoaded', () => {
             if (quizData.length === 0) {
-                document.getElementById('quiz-container').innerHTML = '<div style="text-align:center; padding: 20px;">No questions found!</div>';
+                document.getElementById('quiz-container').innerHTML = '<h2 style="text-align:center; padding:20px;">No questions found</h2>';
                 return;
             }
 

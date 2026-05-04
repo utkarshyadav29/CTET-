@@ -128,18 +128,18 @@
             </div>
 
             <!-- Changed to go directly to quiz.html -->
-            <button class="btn btn-practice take-test-btn" onclick="window.location.href='quiz.html?chapter=history_1'">
+            <button class="btn btn-practice take-test-btn" onclick="window.location.href='quiz.html?chapter=ch1'">
                 <span class="btn-icon">📝</span>
                 <span class="btn-text">Take Test Now</span>
             </button>
         </div>
     </div>
 
-    <script src="data.js"></script>
+    <script src="./data.js?v=2" defer></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const subjectId = urlParams.get('subject') || 'history';
-        const chapterId = urlParams.get('chapter') || 'history_1';
+        const chapterId = urlParams.get('chapter') || 'ch1';
 
         let theoryData = [];
         let chapterTitle = '';
