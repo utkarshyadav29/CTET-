@@ -3,9 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>Moti Potato - CTET Prep</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -98,11 +95,6 @@
         <div id="funny-message" class="funny-message"></div>
     </div>
 
-    <script>
-        // Dynamically load script.js to avoid cache
-        const s = document.createElement('script');
-        s.src = 'script.js?v=' + new Date().getTime();
-        document.body.appendChild(s);
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

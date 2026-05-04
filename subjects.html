@@ -130,16 +130,8 @@
         </div>
     </div>
 
+    <script src="data.js"></script>
     <script>
-        let subjectsData = [];
-        fetch('/quiz.json')
-            .then(res => res.json())
-            .then(data => {
-                subjectsData = data;
-                renderSubjects();
-            })
-            .catch(err => console.error("Error loading quiz data:", err));
-
         // Check mode from URL
         const urlParams = new URLSearchParams(window.location.search);
         const mode = urlParams.get('mode') || 'study';
@@ -153,22 +145,12 @@
             subjectsData.forEach(subject => {
                 let chaptersHtml = '';
                 subject.chapters.forEach(chapter => {
-                    const isMega = (chapter.id === 'mega_quiz' || chapter.type === 'mega');
-                    const style = isMega ? 'background: #FF7E67; color: white; border-radius: 10px; margin: 10px; width: calc(100% - 20px); text-align: center; border: none;' : '';
-                    
                     chaptersHtml += `
-                        <button class="chapter-btn" style="${style}" onclick="goToChapter('${subject.id}', '${chapter.id}', ${isMega})">
+                        <button class="chapter-btn" onclick="goToChapter('${subject.id}', '${chapter.id}')">
                             ${chapter.title_mr}
                         </button>
                     `;
                 });
-                
-                // Always add a Mega Quiz button at the bottom
-                chaptersHtml += `
-                    <button class="chapter-btn" style="background: #FF7E67; color: white; border-radius: 10px; margin: 10px; width: calc(100% - 20px); text-align: center; border: none; padding: 15px 20px; font-size: 1.1rem; font-weight: 700; cursor: pointer;" onclick="goToChapter('${subject.id}', 'mega_quiz', true)">
-                        🏆 मेगा क्विझ (सर्व ८५ प्रश्न)
-                    </button>
-                `;
                 
                 const subjectHtml = `
                     <div class="subject-header" onclick="toggleAccordion(this)">
@@ -183,17 +165,17 @@
             });
         }
 
+        renderSubjects();
+
         function toggleAccordion(element) {
             element.classList.toggle('active');
         }
 
-        function goToChapter(subjectId, chapterId, isMega) {
-            // Mega Quiz always goes to quiz.html regardless of mode
-            const t = new Date().getTime();
-            if (mode === 'quiz' || isMega) {
-                window.location.href = `quiz.html?subject=${subjectId}&chapter=${chapterId}&v=${t}`;
+        function goToChapter(subjectId, chapterId) {
+            if (mode === 'quiz') {
+                window.location.href = `quiz.html?subject=${subjectId}&chapter=${chapterId}`;
             } else {
-                window.location.href = `study.html?subject=${subjectId}&chapter=${chapterId}&v=${t}`;
+                window.location.href = `study.html?subject=${subjectId}&chapter=${chapterId}`;
             }
         }
     </script>
