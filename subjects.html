@@ -112,6 +112,105 @@
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
+
+        /* Mega Quiz Custom Premium Styling */
+        .mega-card {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.35);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .mega-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.45);
+        }
+
+        .mega-card:active {
+            transform: translateY(2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.25);
+        }
+
+        .mega-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 18px;
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+        }
+
+        .mega-shine {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            animation: shine 4s infinite;
+        }
+
+        .mega-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            backdrop-filter: blur(5px);
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        .mega-title {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+        }
+
+        .mega-desc {
+            font-size: 0.95rem;
+            opacity: 0.95;
+            font-weight: 700;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mega-icon-floating {
+            position: absolute;
+            right: -10px;
+            bottom: -15px;
+            font-size: 5rem;
+            opacity: 0.15;
+            transform: rotate(-15deg);
+            pointer-events: none;
+            transition: all 0.3s;
+        }
+
+        .mega-card:hover .mega-icon-floating {
+            transform: scale(1.1) rotate(5deg);
+            opacity: 0.25;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.15); }
+            100% { box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); }
+        }
     </style>
 </head>
 <body>
@@ -125,12 +224,13 @@
         
         <h1 class="page-title" id="page-title">Select Subject</h1>
         
+        <div id="mega-quiz-container"></div>
+        
         <div class="accordion-container" id="subjects-container">
             <!-- Dynamically populated -->
         </div>
     </div>
 
-    <script src="./data.js?v=2"></script>
     <script>
         // Check mode from URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -139,25 +239,48 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('page-title').innerText = mode === 'quiz' ? 'Select Quiz 📝' : 'Padhai Karna Hai 📖';
 
-            if (typeof subjectsData === 'undefined') {
+            // Force refresh data.js by adding a timestamp
+            const script = document.createElement('script');
+            script.src = 'data.js?v=' + new Date().getTime();
+            document.head.appendChild(script);
+
+            script.onload = () => {
+                if (typeof subjectsData === 'undefined') {
+                    document.getElementById('subjects-container').innerHTML = '<div style="text-align:center; padding:20px;">Data failed to load. Please refresh.</div>';
+                    return;
+                }
+                renderSubjects();
+            };
+
+            script.onerror = () => {
                 document.getElementById('subjects-container').innerHTML = '<div style="text-align:center; padding:20px;">Data failed to load. Please refresh.</div>';
-                return;
-            }
-            renderSubjects();
+            };
         });
 
         function renderSubjects() {
             const container = document.getElementById('subjects-container');
+            const megaContainer = document.getElementById('mega-quiz-container');
             container.innerHTML = '';
+            megaContainer.innerHTML = '';
             
+            let megaQuizChapter = null;
+            let megaQuizSubjectId = null;
+
             subjectsData.forEach(subject => {
                 let chaptersHtml = '';
+                
                 subject.chapters.forEach(chapter => {
-                    chaptersHtml += `
-                        <button class="chapter-btn" onclick="goToChapter('${subject.id}', '${chapter.id}')">
-                            ${chapter.title_mr}
-                        </button>
-                    `;
+                    const isMega = (chapter.id === 'mega_quiz' || chapter.type === 'mega');
+                    if (isMega) {
+                        megaQuizChapter = chapter;
+                        megaQuizSubjectId = subject.id;
+                    } else {
+                        chaptersHtml += `
+                            <button class="chapter-btn" onclick="goToChapter('${subject.id}', '${chapter.id}', false)">
+                                ${chapter.title_mr}
+                            </button>
+                        `;
+                    }
                 });
                 
                 const subjectHtml = `
@@ -171,14 +294,32 @@
                 `;
                 container.innerHTML += subjectHtml;
             });
+
+            // If a Mega Quiz exists, render the special premium card!
+            if (megaQuizChapter) {
+                const subTitle = mode === 'quiz' 
+                    ? 'अंतिम सराव करा! संपूर्ण ८५ प्रश्नांची टेस्ट 🎯' 
+                    : 'सर्व अभ्यास झाला का? चला ८५ प्रश्नांची टेस्ट घेऊया! 📝';
+                    
+                megaContainer.innerHTML = `
+                    <div class="mega-card" onclick="goToChapter('${megaQuizSubjectId}', '${megaQuizChapter.id}', true)">
+                        <div class="mega-shine"></div>
+                        <div class="mega-badge">🔥 Super Challenge</div>
+                        <h2 class="mega-title">${megaQuizChapter.title_mr}</h2>
+                        <p class="mega-desc"><span>🥔</span> ${subTitle}</p>
+                        <div class="mega-icon-floating">🏆</div>
+                    </div>
+                `;
+            }
         }
 
         function toggleAccordion(element) {
             element.classList.toggle('active');
         }
 
-        function goToChapter(subjectId, chapterId) {
-            if (mode === 'quiz') {
+        function goToChapter(subjectId, chapterId, isMega) {
+            // Mega Quiz always goes to quiz.html regardless of the current mode
+            if (mode === 'quiz' || isMega) {
                 window.location.href = `quiz.html?subject=${subjectId}&chapter=${chapterId}`;
             } else {
                 window.location.href = `study.html?subject=${subjectId}&chapter=${chapterId}`;
